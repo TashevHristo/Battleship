@@ -13,7 +13,7 @@ struct ShipCoordinates {
 };
 
 
-void FillShips(int id, ShipCoordinates* ships, char** bord) {
+void FillShips(int id, ShipCoordinates* ships, char** board) {
 	int startX = ships[id].start[0];
 	int startY = ships[id].start[1];
 	int endX = ships[id].end[0];
@@ -21,33 +21,35 @@ void FillShips(int id, ShipCoordinates* ships, char** bord) {
 	if (ships[id].isHorizontal == 1) {
 		for (size_t i = startY; i < endY + 1; i++)
 		{
-			bord[startX][i] = '#';
+			board[startX][i] = '#';
 		}
 	}
 	else {
 		for (size_t i = startX; i < endX + 1; i++)
 		{
-			bord[i][startY] = '#';
+			board[i][startY] = '#';
 		}
 	}
 }
-void PrintBord(char** bord) {
-	for (size_t i = 0; i < 10; i++)
+void PrintBoard(char** board) {
+	for (size_t i = 0; i < 11; i++)
 	{
-		/*if (i == 0) {
-			for (size_t j = 0; j < 11; j++)
+		if (i == 0) {
+			std::cout << "   ";
+			for (size_t j = 0; j < 10; j++)
 			{
-				std::cout << "  " << j;
+				std::cout << j << "  ";
 			}
 			std::cout << std::endl;
 			continue;
-		}*/
-		for (size_t j = 0; j < 10; j++)
+		}
+		for (size_t j = 0; j < 11; j++)
 		{
-			/*if (j == 0) {
+			if (j == 0) {
 				std::cout << i - 1;
-			}*/
-			std::cout << "  " << bord[i][j];
+				continue;
+			}
+			std::cout << "  " << board[i - 1][j - 1];
 		}
 		std::cout << std::endl;
 	}
@@ -86,7 +88,7 @@ void ReadCoordinates(int first[COORDINATES_SIZE], int second[COORDINATES_SIZE], 
 		end[i] = second[i];
 	}
 }
-void EnterPlayerShips(ShipCoordinates* ships, char** bord) {
+void EnterPlayerShips(ShipCoordinates* ships, char** board) {
 	int oneSquare = 4;
 	int twoSquare = 3;
 	int threeSquare = 2;
@@ -103,7 +105,7 @@ void EnterPlayerShips(ShipCoordinates* ships, char** bord) {
 		shipLenght = (secondCoordinates[0] - firstCoordinates[0]) + (secondCoordinates[1] - firstCoordinates[1]);
 		if (!isValidShip(firstCoordinates, secondCoordinates, shipLenght)) {
 			system("cls");
-			PrintBord(bord);
+			PrintBoard(board);
 			std::cout << "Please Enter Valid Coordinates!" << std::endl;
 			continue;
 		}
@@ -128,17 +130,17 @@ void EnterPlayerShips(ShipCoordinates* ships, char** bord) {
 				break;
 		}
 		system("cls");
-		FillShips(i, ships, bord);
-		PrintBord(bord);
+		FillShips(i, ships, board);
+		PrintBoard(board);
 	}
 }
-void FillBord(char** bord) {
+void FillBoard(char** board) {
 	for (size_t i = 0; i < 10; i++)
 	{
-		bord[i] = new char[9];
+		board[i] = new char[9];
 		for (size_t j = 0; j < 10; j++)
 		{
-			bord[i][j] = '~';
+			board[i][j] = '~';
 		}
 	}
 }
@@ -149,8 +151,8 @@ int main()
 	int* computerShips = new int[SHIP_COUNT] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	ShipCoordinates* playerShips = new ShipCoordinates[SHIP_COUNT];
 	ShipCoordinates PlayerShips;
-	char** bord = new char*[9];
-	FillBord(bord);
-	PrintBord(bord);
-	EnterPlayerShips(playerShips, bord);
+	char** board = new char*[9];
+	FillBoard(board);
+	PrintBoard(board);
+	EnterPlayerShips(playerShips, board);
 }
