@@ -62,13 +62,30 @@ bool isVertical(int first[COORDINATES_SIZE], int second[COORDINATES_SIZE]) {
 	if (first[1] == second[1]) return true;
 	return false;
 }
-bool isValidShip(int first[COORDINATES_SIZE], int second[COORDINATES_SIZE], int length) {
+bool isValidShip(int first[COORDINATES_SIZE], int second[COORDINATES_SIZE], int length, char** board) {
 	for (size_t i = 0; i < 2; i++)
 	{
 		if (first[i] < 0 || first[i] > 10 || second[i] < 0 || second[i] > 10)  return false;
 	}
-	if((isHorizontal(first, second) || isVertical(first, second)) && 0 >= length && length > 4) return true;
-	return false;
+	if((!isHorizontal(first, second) && !isVertical(first, second)) || 0 > length || length > 4) return false;
+	if (isHorizontal(first, second)) {
+		for (int i = first[1] - 1; i < second[1] + 2; i++)
+		{
+			for (int j = first[0] - 1; j < second[0] + 2; j++) {
+				if (j < 0 || j > 9) {
+					continue;
+				}
+				if (board[j][i] == '#') return false;
+			}
+		}
+	}
+	else {
+		for (int i = first[0] - 1; i < second[0] + 2; i++)
+		{
+			if (board[i][first[1]] == '#') return false;
+		}
+	}
+	return true;
 }
 void ReadCoordinatesFromConsole(int first[COORDINATES_SIZE], int second[COORDINATES_SIZE]) {
 	for (size_t i = 0; i < COORDINATES_SIZE; i++)
@@ -103,7 +120,7 @@ void EnterPlayerShips(ShipCoordinates* ships, char** board) {
 
 		ReadCoordinatesFromConsole(firstCoordinates, secondCoordinates);
 		shipLenght = (secondCoordinates[0] - firstCoordinates[0]) + (secondCoordinates[1] - firstCoordinates[1]);
-		if (!isValidShip(firstCoordinates, secondCoordinates, shipLenght)) {
+		if (!isValidShip(firstCoordinates, secondCoordinates, shipLenght, board)) {
 			system("cls");
 			PrintBoard(board);
 			std::cout << "Please Enter Valid Coordinates!" << std::endl;
@@ -147,7 +164,7 @@ void FillBoard(char** board) {
 
 int main()
 {
-	//int* playerShips = new int[SHIP_COUNT] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	//int** playerShips = new int*[SHIP_COUNT];
 	int* computerShips = new int[SHIP_COUNT] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	ShipCoordinates* playerShips = new ShipCoordinates[SHIP_COUNT];
 	ShipCoordinates PlayerShips;
