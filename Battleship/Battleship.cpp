@@ -362,10 +362,6 @@ void PlayerToShoot(ShipCoordinates* ships, char** board, int& aliveShips, char**
 void ComputerToShoot(ShipCoordinates* ships, char** board, int& aliveShips, char** computer) {
 	int x = rand() % 10;
 	int y = rand() % 10;
-	/*if (!isValidHit(x, y, board)) {
-		std::cout << "Please enter valid coordinates!";
-		ComputerToShoot(ships, board, aliveShips, computer);
-	}*/
 	if (board[x][y] == '#') {
 		board[x][y] = 'x';
 		ClearAndPrint(board, computer);
@@ -379,7 +375,6 @@ void ComputerToShoot(ShipCoordinates* ships, char** board, int& aliveShips, char
 	}
 	else if (board[x][y] == '~') {
 		board[x][y] = 'o';
-		//ClearAndPrint(board, computer);
 	}
 }
 
