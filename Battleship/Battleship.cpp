@@ -145,11 +145,13 @@ bool isValidShip(int first[COORDINATES_SIZE], int second[COORDINATES_SIZE], int 
 	return true;
 }
 void ReadCoordinatesFromConsole(int first[COORDINATES_SIZE], int second[COORDINATES_SIZE]) {
+	std::cout << "Enter start coordinates: ";
 	for (size_t i = 0; i < COORDINATES_SIZE; i++)
 	{
 		std::cin >> first[i];
 	}
 
+	std::cout << "Enter end coordinates: ";
 	for (size_t i = 0; i < COORDINATES_SIZE; i++)
 	{
 		std::cin >> second[i];
@@ -195,8 +197,7 @@ void EnterPlayerShips(ShipCoordinates* ships, char** player, char** computer) {
 
 	for (int i = 0; i <= sizeOfBoard - 1; i++) {
 		std::cout << "One square count: " << oneSquare << " Two square count: " << twoSquare <<
-			" Three square count: " << threeSquare << " Four square count: " << fourSquare << std::endl;
-
+			" Three square count: " << threeSquare << " Four square count: " << fourSquare << std::endl;		
 		ReadCoordinatesFromConsole(firstCoordinates, secondCoordinates);
 		shipLenght = (secondCoordinates[0] - firstCoordinates[0]) + (secondCoordinates[1] - firstCoordinates[1]);
 		if (!isValidShip(firstCoordinates, secondCoordinates, shipLenght, player) || !CheckShipCount(
@@ -241,8 +242,6 @@ void AutoEnterShips(ShipCoordinates* ships, char** board, char** player) {
 		shipLenght = (secondCoordinates[0] - firstCoordinates[0]) + (secondCoordinates[1] - firstCoordinates[1]);
 		if (!isValidShip(firstCoordinates, secondCoordinates, shipLenght, board) || !CheckShipCount(
 			shipLenght, oneSquare, twoSquare, threeSquare, fourSquare)) {
-			//system("cls");
-			//PrintBoard(player, computer);
 			i--;
 			continue;
 		}
@@ -252,7 +251,6 @@ void AutoEnterShips(ShipCoordinates* ships, char** board, char** player) {
 		ships[i].isHorizontal = isHorizontal(firstCoordinates, secondCoordinates);
 		UpdateShipCount(shipLenght, oneSquare, twoSquare, threeSquare, fourSquare);
 		FillShips(i, ships, board);
-		//ClearAndPrint(player, board);
 	}
 }
 void FillBoard(char** board) {
@@ -309,21 +307,17 @@ void SaveToFile(ShipCoordinates* player, ShipCoordinates* computer, int alivePla
 	file << alivePlayerShips << std::endl;
 	for (size_t i = 0; i < SHIP_COUNT; i++)
 	{
-		file << player[i].id << "," << player[i].start[0] << "," << player[i].start[1] << "," << player[i].end[0] <<
-			"," << player[i].end[1] << player[i].length << "," << player[i].isHorizontal << std::endl;
+		file << player[i].id << std::endl << player[i].start[0] << std::endl << player[i].start[1] << std::endl << player[i].end[0] <<
+			std::endl << player[i].end[1] << std::endl << player[i].length << std::endl << player[i].isHorizontal << std::endl;
 	}
-	file << std::endl;
 	file << aliveComputerShips << std::endl;
 	for (size_t i = 0; i < SHIP_COUNT; i++)
 	{
-		file << computer[i].id << "," << computer[i].start[0] << "," << computer[i].start[1] << "," << computer[i].end[0] <<
-			"," << computer[i].end[1] << computer[i].length << "," << computer[i].isHorizontal << std::endl;
+		file << computer[i].id << std::endl << computer[i].start[0] << std::endl << computer[i].start[1] << std::endl << computer[i].end[0] <<
+			std::endl << computer[i].end[1] << std::endl << computer[i].length << std::endl << computer[i].isHorizontal << std::endl;
 	}
-	file << std::endl;
 	WriteBoard(file, PlayerBoard);
-	file << std::endl;
 	WriteBoard(file, ComputerBoard);
-	file << std::endl;
 	WriteBoard(file, ComputerShowBoard);
 	file.close();
 }
@@ -331,7 +325,7 @@ void PlayerToShoot(ShipCoordinates* ships, char** board, int& aliveShips, char**
 	ShipCoordinates* playerShips, bool& saved) {
 	int x;
 	int y;
-	std::cout << "Your turn! Please enter coordinates to hit!: ";
+	std::cout << "Your turn! Please enter coordinates to hit: ";
 	std::cin >> x >> y;
 	if (x == -1 && y == -1) {
 		SaveToFile(playerShips, ships, alivePlayerShips, aliveShips, player, computer, board);
@@ -388,9 +382,6 @@ void ComputerToShoot(ShipCoordinates* ships, char** board, int& aliveShips, char
 		//ClearAndPrint(board, computer);
 	}
 }
-void ReadFromFile() {
-
-}
 
 int main()
 {
@@ -406,45 +397,116 @@ int main()
 	std::cout << "Enter 1 to start a new game" << std::endl;
 	std::cout << "Enter 2 to continue the previous one" << std::endl;
 	std::cin >> isNewGame;
-	std::cout << "For the desired size, enter the corresponding number:" << std::endl;
-	std::cout << "1 - Calm Waters(10X10)" << std::endl;
-	std::cout << "2 - Rough Seas(12X12)" << std::endl;
-	std::cout << "3 - Storm of Steel(15X15)" << std::endl;
-	std::cin >> chooseSize;
-	switch (chooseSize) {
-	case 1:
-		sizeOfBoard = CALM_WATERS;
-		break;
-	case 2:
-		sizeOfBoard = ROUGH_SEAS;
-		break;
-	case 3:
-		sizeOfBoard = STORM_OF_STEEL;
-		break;
-	default:
-		break;
-	}
-	char** PlayerBoard = new char* [sizeOfBoard - 1];
-	char** ComputerBoard = new char* [sizeOfBoard - 1];
-	char** ComputerShowBoard = new char* [sizeOfBoard - 1];
-	FillBoard(PlayerBoard);
-	FillBoard(ComputerBoard);
-	FillBoard(ComputerShowBoard);
-	std::cout << "Enter 1 if you want to enter ships automatically" << std::endl;
-	std::cout << "Enter 2 if you want to enter ships manually" << std::endl;
-	std::cin >> isAuto;
-	AutoEnterShips(computerShips, ComputerBoard, PlayerBoard);
-	//ClearAndPrint(PlayerBoard, ComputerShowBoard);
-	switch (isAuto) {
-	case 1:
-		AutoEnterShips(playerShips, PlayerBoard, ComputerBoard);
+	char** PlayerBoard = {0};
+	char** ComputerBoard = {0};
+	char** ComputerShowBoard = {0};
+
+
+	if (isNewGame == 2) {
+		if (!"SavedGame.txt") {
+			std::cout << "There is no such file!";
+			return 0;
+		}
+		std::ifstream file("SavedGame.txt");
+		if (!file.is_open()) {
+			std::cout << "There is problem reading the file!";
+			return 0;
+		}
+		file >> sizeOfBoard;
+		PlayerBoard = new char* [sizeOfBoard - 1];
+		ComputerBoard = new char* [sizeOfBoard - 1];
+		ComputerShowBoard = new char* [sizeOfBoard - 1];
+		file >> alivePlayerShips;
+		for (size_t i = 0; i < SHIP_COUNT; i++)
+		{
+			file >> playerShips[i].id;
+			file >> playerShips[i].start[0];
+			file >> playerShips[i].start[1];
+			file >> playerShips[i].end[0];
+			file >> playerShips[i].end[1];
+			file >> playerShips[i].length;
+			file >> playerShips[i].isHorizontal;
+		}
+
+		file >> aliveComputerShips;
+		for (size_t i = 0; i < SHIP_COUNT; i++)
+		{
+			file >> computerShips[i].id;
+			file >> computerShips[i].start[0];
+			file >> computerShips[i].start[1];
+			file >> computerShips[i].end[0];
+			file >> computerShips[i].end[1];
+			file >> computerShips[i].length;
+			file >> computerShips[i].isHorizontal;
+		}
+		for (size_t i = 0; i < sizeOfBoard; i++)
+		{
+			PlayerBoard[i] = new char[sizeOfBoard - 1];
+			for (size_t j = 0; j < sizeOfBoard; j++)
+			{
+				file >> PlayerBoard[i][j];
+			}
+		}
+		for (size_t i = 0; i < sizeOfBoard; i++)
+		{
+			ComputerBoard[i] = new char[sizeOfBoard - 1];
+			for (size_t j = 0; j < sizeOfBoard; j++)
+			{
+				file >> ComputerBoard[i][j];
+			}
+		}
+		for (size_t i = 0; i < sizeOfBoard; i++)
+		{
+			ComputerShowBoard[i] = new char[sizeOfBoard - 1];
+			for (size_t j = 0; j < sizeOfBoard; j++)
+			{
+				file >> ComputerShowBoard[i][j];
+			}
+		}
+		file.close();
 		ClearAndPrint(PlayerBoard, ComputerShowBoard);
-		break;
-	case 2:
-		EnterPlayerShips(playerShips, PlayerBoard, ComputerBoard);
-		break;
-	default:
-		break;
+	}
+	else {
+		std::cout << "For the desired size, enter the corresponding number:" << std::endl;
+		std::cout << "1 - Calm Waters(10X10)" << std::endl;
+		std::cout << "2 - Rough Seas(12X12)" << std::endl;
+		std::cout << "3 - Storm of Steel(15X15)" << std::endl;
+		std::cin >> chooseSize;
+		switch (chooseSize) {
+		case 1:
+			sizeOfBoard = CALM_WATERS;
+			break;
+		case 2:
+			sizeOfBoard = ROUGH_SEAS;
+			break;
+		case 3:
+			sizeOfBoard = STORM_OF_STEEL;
+			break;
+		default:
+			break;
+		}
+		PlayerBoard = new char* [sizeOfBoard - 1];
+		ComputerBoard = new char* [sizeOfBoard - 1];
+		ComputerShowBoard = new char* [sizeOfBoard - 1];
+		FillBoard(PlayerBoard);
+		FillBoard(ComputerBoard);
+		FillBoard(ComputerShowBoard);
+		std::cout << "Enter 1 if you want to enter ships automatically" << std::endl;
+		std::cout << "Enter 2 if you want to enter ships manually" << std::endl;
+		std::cin >> isAuto;
+		AutoEnterShips(computerShips, ComputerBoard, PlayerBoard);
+		switch (isAuto) {
+		case 1:
+			AutoEnterShips(playerShips, PlayerBoard, ComputerBoard);
+			ClearAndPrint(PlayerBoard, ComputerShowBoard);
+			break;
+		case 2:
+			ClearAndPrint(PlayerBoard, ComputerShowBoard);
+			EnterPlayerShips(playerShips, PlayerBoard, ComputerShowBoard);
+			break;
+		default:
+			break;
+		}
 	}
 	while (aliveComputerShips > 0 && alivePlayerShips > 0) {
 		PlayerToShoot(computerShips, ComputerShowBoard, aliveComputerShips, PlayerBoard, ComputerBoard, alivePlayerShips,
@@ -452,6 +514,7 @@ int main()
 		if (isSaved) break;
 		ComputerToShoot(playerShips, PlayerBoard, alivePlayerShips, ComputerBoard);
 		ClearAndPrint(PlayerBoard, ComputerShowBoard);
+		std::cout << "Missed!" << std::endl;
 	}
 	if (isSaved) {
 		system("cls");
@@ -465,4 +528,5 @@ int main()
 		system("cls");
 		std::cout << "You lost!";
 	}
+	
 }
